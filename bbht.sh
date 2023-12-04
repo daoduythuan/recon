@@ -14,7 +14,7 @@ hor_2_RevDNS(){
 hor_3_murhash(){
     python3 /Users/thuandao/go/bin/MurMurHash/MurMurHash.py
 }
-
+###############
 ver_pass_1_amass(){
     amass enum -list -config $CONFIG/amass.ini
     amass enum -passive -d $1 -config $CONFIG/amass.ini -o ver_pass_1_amass.txt
@@ -48,9 +48,21 @@ for sub in $( ( cat subdomains.txt | rev | cut -d '.' -f 3,2,1 | rev | sort | un
 done
 }
 
+fetch_url(){
+    echo "Running katana"
+    cat $1-subdomains.txt | katana -list $1-subdomains.txt -silent -jc -kf all -d 3 -fs rdn -c 30 | grep -Eo "https?://([a-z0-9]+[.])*$1.*"
+    echo "Running GAU"
+    cat $1-subdomains.txt | /Users/thuandao/go/bin/gau --threads 60 #| grep -Eo "https?://([a-z0-9]+[.])*$1.*"
+    echo "Running hakrawler"
+    cat $1-subdomains.txt | httpx -silent | hakrawler -subs -u | grep -Eo "https?://([a-z0-9]+[.])*$1.*"
+    echo "Running waybackurls"
+    cat $1-subdomains.txt | waybackurls | grep -Eo "https?://([a-z0-9]+[.])*$1.*"
+}
 
-#### next step, do crawl httpx
+scan_port(){
+    naabu -json -exclude-cdn -list $1-subdomains.txt -top-ports 1000 -c 30 -rate 1500 -timeout 5000 -silent
+}
 
 craw_http(){
-    httpx -cl -ct -rt -location -td -websocket -cname -asn -cdn -probe -random-agent -t 30 -json -l $1 -silent -fr  
+    httpx -cl -ct -rt -location -td -websocket -cname -asn -cdn -probe -random-agent -t 30 -json -l $1-subdomains.txt -silent -fr | grep -v "context deadline exceeded" | grep -v "no address found for host"
 }

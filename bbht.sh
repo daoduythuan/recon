@@ -48,6 +48,10 @@ for sub in $( ( cat subdomains.txt | rev | cut -d '.' -f 3,2,1 | rev | sort | un
 done
 }
 
+http_probe(){
+    cat $1-subdomains.txt | httpx -silent | tee $1-httpx.txt
+}
+
 fetch_url(){
     echo "Running katana"
     cat $1-httpx.txt | katana -list $1-httpx.txt -silent -jc -kf all -d 3 -fs rdn -c 30 | grep -Eo "https?://([a-z0-9]+[.])*$1.*"

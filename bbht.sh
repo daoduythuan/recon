@@ -53,7 +53,6 @@ fetch_url(){
     cat $1-httpx.txt | katana -list $1-httpx.txt -silent -jc -kf all -d 3 -fs rdn -c 30 | grep -Eo "https?://([a-z0-9]+[.])*$1.*"
     echo "Running GAU"
     cat $1-httpx.txt | gau --threads 60 #| grep -Eo "https?://([a-z0-9]+[.])*$1.*"
-    
     echo "Running hakrawler"
     cat $1-httpx.txt | httpx -silent | hakrawler -subs -u | grep -Eo "https?://([a-z0-9]+[.])*$1.*"
     echo "Running waybackurls"

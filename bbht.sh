@@ -50,15 +50,17 @@ done
 
 fetch_url(){
     echo "Running katana"
-    cat $1-subdomains.txt | katana -list $1-subdomains.txt -silent -jc -kf all -d 3 -fs rdn -c 30 | grep -Eo "https?://([a-z0-9]+[.])*$1.*"
+    cat $1-httpx.txt | katana -list $1-httpx.txt -silent -jc -kf all -d 3 -fs rdn -c 30 | grep -Eo "https?://([a-z0-9]+[.])*$1.*"
     echo "Running GAU"
-    cat $1-subdomains.txt | /Users/thuandao/go/bin/gau --threads 60 #| grep -Eo "https?://([a-z0-9]+[.])*$1.*"
+    cat $1-httpx.txt | gau --threads 60 #| grep -Eo "https?://([a-z0-9]+[.])*$1.*"
+    
     echo "Running hakrawler"
-    cat $1-subdomains.txt | httpx -silent | hakrawler -subs -u | grep -Eo "https?://([a-z0-9]+[.])*$1.*"
+    cat $1-httpx.txt | httpx -silent | hakrawler -subs -u | grep -Eo "https?://([a-z0-9]+[.])*$1.*"
     echo "Running waybackurls"
-    cat $1-subdomains.txt | waybackurls | grep -Eo "https?://([a-z0-9]+[.])*$1.*"
+    cat $1-httpx.txt | waybackurls | grep -Eo "https?://([a-z0-9]+[.])*$1.*"
+    echo "Running gospider"
+    cat $1-httpx.txt | gospider -S $1-httpx.txt --js -d 2 --sitemap --robots -w -r -t 30 | grep -Eo "https?://([a-z0-9]+[.])*$1.*"
 }
-
 scan_port(){
     naabu -json -exclude-cdn -list $1-subdomains.txt -top-ports 1000 -c 30 -rate 1500 -timeout 5000 -silent
 }

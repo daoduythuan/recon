@@ -1,0 +1,25 @@
+# Dependency Directories
+node_modules/
+go/
+.cargo/
+.npm/
+.nvm/
+.rustup/
+
+# Build/Package Files
+package-lock.json
+*.log
+
+# Personal/OS Files (ABSOLUTELY DO NOT COMMIT THESE)
+.bash_history
+.bash_logout
+.bashrc
+.cache/
+.config/
+.gitconfig
+.local/
+.profile
+.ssh/
+.sudo_as_admin_successful
+.viminfo
+.wget-hsts
